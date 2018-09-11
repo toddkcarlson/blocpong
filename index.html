@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bloc Pong</title>
+  <style type="text/css">
+    #table {
+      margin: 0 auto;
+      display: block;
+      border: 1px solid black;
+      background-color: white;
+    }
+  </style>
+</head>
+
+<body onload="render()">
+  <h1>Bloc Pong</h1>
+  <canvas id="table" width="700" height="500"></canvas>
+
+  <script>
+    // Constructor function for Paddle objects 
+    function Paddle(x_position, y_position, width, height) {
+      this.x = x_position;
+      this.y = y_position;
+      this.w = width;
+      this.h = height;
+      this.render = function() {
+        var table_canvas = document.getElementById('table');
+        var context = table_canvas.getContext('2d');
+        context.beginPath();
+        context.rect(this.x,this.y,this.w,this.h)
+        context.fillStyle = 'black';
+        context.fill();
+      };
+    }
+    
+    // Create Paddle objects
+    var computer = new Paddle(30,175,20,130);
+    var player = new Paddle(650,175,20,130);
+
+    // Create Ball object
+    var ball = {
+      x : 340, y : 240, w : 20, h : 20,
+      render : function() {
+        var table_canvas = document.getElementById('table');
+        var context = table_canvas.getContext('2d');
+        context.beginPath();
+        context.rect(this.x,this.y,this.w,this.h)
+        context.fillStyle = 'black';
+        context.fill();
+      }
+    };
+
+    // Render objects
+    function render(){
+    	computer.render();    	
+    	player.render();
+    	ball.render();
+    }
+
+  </script>
+</body>
+</html>
