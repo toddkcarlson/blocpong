@@ -12,7 +12,7 @@
   </style>
 </head>
 
-<body onload="render()">
+<body>
   <h1>Bloc Pong</h1>
   <canvas id="table" width="700" height="500"></canvas>
 
@@ -23,6 +23,7 @@
       this.y = y_position;
       this.w = width;
       this.h = height;
+      this.y_speed = 0;        
       this.render = function() {
         var table_canvas = document.getElementById('table');
         var context = table_canvas.getContext('2d');
@@ -30,9 +31,21 @@
         context.rect(this.x,this.y,this.w,this.h)
         context.fillStyle = 'black';
         context.fill();
+        // Move Player Paddle
+        window.addEventListener('keydown', function (e) {
+            context.key = e.keyCode;
+        })
+        window.addEventListener('keyup', function (e) {
+            context.key = false;
+        })
+        if (context.key && context.key == 38) {player.y_speed = -1; }
+        if (context.key && context.key == 40) {player.y_speed = 1; }                 
       };
+      this.move = function() {
+        this.y += this.y_speed;
+      }      
     }
-    
+
     // Create Paddle objects
     var computer = new Paddle(30,175,20,130);
     var player = new Paddle(650,175,20,130);
@@ -50,12 +63,22 @@
       }
     };
 
+    // Animate game
+    var animate = window.requestAnimationFrame ||
+              function(callback) { window.setTimeout(callback, 1000/60) };  
+
     // Render objects
-    function render(){
-    	computer.render();    	
+    function step(){           	
+    	computer.render();
     	player.render();
+        player.move();
     	ball.render();
+        animate(step)
     }
+    
+    //Continuously repaint 
+    animate(step);    
+  	window.onload = animate;
 
   </script>
 </body>
