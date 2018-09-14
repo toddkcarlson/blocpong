@@ -17,13 +17,15 @@
   <canvas id="table" width="700" height="500"></canvas>
 
   <script>
+  	window.onload = animate;  	
     // Constructor function for Paddle objects
     function Paddle(x_position, y_position, width, height) {
       this.x = x_position;
       this.y = y_position;
       this.w = width;
       this.h = height;
-      this.y_speed = 0;        
+      this.x_speed = 0;
+      this.y_speed = 0;
       this.render = function() {
         var table_canvas = document.getElementById('table');
         var context = table_canvas.getContext('2d');
@@ -42,7 +44,7 @@
         if (context.key && context.key == 40) {player.y_speed = 1; }                 
       };
       this.move = function() {
-        this.y += this.y_speed;
+        this.y += this.y_speed;       
       }      
     }
 
@@ -68,17 +70,16 @@
               function(callback) { window.setTimeout(callback, 1000/60) };  
 
     // Render objects
-    function step(){           	
-    	computer.render();
-    	player.render();
+    function step(){
         player.move();
+    	player.render();        
+    	computer.render();
     	ball.render();
         animate(step)
     }
     
     //Continuously repaint 
     animate(step);    
-  	window.onload = animate;
 
   </script>
 </body>
