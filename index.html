@@ -1,86 +1,121 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <title>Bloc Pong</title>
-  <style type="text/css">
-    #table {
-      margin: 0 auto;
-      display: block;
-      border: 1px solid black;
-      background-color: white;
+    <head>
+      <title>Bloc Pong</title>
+    </head>
+    <body>
+      <h1>Bloc Pong</h1>
+        <canvas id='table'></canvas>
+<script>
+var canvas;
+var context;
+// width and height of canvas
+var W = 700, H = 500;
+
+// Initialize the game canvas
+function init(){
+  canvas = document.getElementById('table');
+  context = canvas.getContext('2d');  
+  canvas.width = W;
+  canvas.height = H;
+}
+
+// Paint the game canvas background
+function paintCanvas() {
+  context.fillStyle = "black";
+  context.fillRect(0, 0, W, H);
+  context.beginPath();
+  // context.lineWidth = 5;
+  // context.strokeStyle = 'white';
+  // context.strokeRect(0, 0, 700, 500);  
+}
+
+function addKeyEvents() {
+  window.addEventListener('keydown', onKeyDown, true);
+}
+
+// Object constructor
+function Paddle(x, y) {
+  this.x = x;
+  this.y = y;
+  this.color = "white";
+  this.width = 20;
+  this.height = 130;
+  // this.y_speed = 0;
+  // Move the vertical distance 'paddle_speed'
+  this.move = function (paddle_speed) {
+    // clear the current rectangle
+    context.clearRect(this.x, this.y, this.width, this.height);
+    this.y += paddle_speed;
+  }
+  this.render = function () {
+    context.beginPath();
+    context.fillStyle = this.color;
+    context.fillRect(this.x, this.y, this.width, this.height);
+  };
+}
+
+function onKeyDown(e) {
+  // up arrow
+  if (e.keyCode === 38) {
+    // Move 10 pixels on the y axis towards the origin
+    // Only if the paddle y position equals 10 or more pixels
+    if (player.y >= 10){
+      player.move(-10);  
     }
-  </style>
-</head>
+  }
+  // down arrow
+  if (e.keyCode === 40) {
+    // Move 10 pixels on the y axis away from the origin 
+    // Only if the paddle y position equals 360 or fewer pixels
+    if (player.y <= 360){
+      player.move(10);
+    } 
+  }
+}
 
-<body>
-  <h1>Bloc Pong</h1>
-  <canvas id="table" width="700" height="500"></canvas>
+// Declaring a player and computer paddle
+var computer = new Paddle(30, 200);
+var player = new Paddle(650, 200);
 
-  <script>
-  	window.onload = animate;  	
-    // Constructor function for Paddle objects
-    function Paddle(x_position, y_position, width, height) {
-      this.x = x_position;
-      this.y = y_position;
-      this.w = width;
-      this.h = height;
-      this.x_speed = 0;
-      this.y_speed = 0;
-      this.render = function() {
-        var table_canvas = document.getElementById('table');
-        var context = table_canvas.getContext('2d');
-        context.beginPath();
-        context.rect(this.x,this.y,this.w,this.h)
-        context.fillStyle = 'black';
-        context.fill();
-        // Move Player Paddle
-        window.addEventListener('keydown', function (e) {
-            context.key = e.keyCode;
-        })
-        window.addEventListener('keyup', function (e) {
-            context.key = false;
-        })
-        if (context.key && context.key == 38) {player.y_speed = -1; }
-        if (context.key && context.key == 40) {player.y_speed = 1; }                 
-      };
-      this.move = function() {
-        this.y += this.y_speed;       
-      }      
-    }
+// Ball Object Constructor
+function Ball() {
+  this.x = 350;
+  this.y = 265;
+  this.color = "white";
+  this.radius = 10;
+  this.render = function () {
+    context.fillStyle = this.color;
+    context.beginPath();
+    context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    context.fill();
+  };
+}
 
-    // Create Paddle objects
-    var computer = new Paddle(30,175,20,130);
-    var player = new Paddle(650,175,20,130);
+// Declaring a new ball
+var ball = new Ball();
 
-    // Create Ball object
-    var ball = {
-      x : 340, y : 240, w : 20, h : 20,
-      render : function() {
-        var table_canvas = document.getElementById('table');
-        var context = table_canvas.getContext('2d');
-        context.beginPath();
-        context.rect(this.x,this.y,this.w,this.h)
-        context.fillStyle = 'black';
-        context.fill();
-      }
-    };
+var render = function () {
+  paintCanvas();
+  player.render();
+  computer.render();
+  ball.render();
+  // redraw
+  animate(render);
+};
 
-    // Animate game
-    var animate = window.requestAnimationFrame ||
-              function(callback) { window.setTimeout(callback, 1000/60) };  
+// Actions needed for each repaint
+function step(){
+  render();
+}
 
-    // Render objects
-    function step(){
-        player.move();
-    	player.render();        
-    	computer.render();
-    	ball.render();
-        animate(step)
-    }
-    
-    //Continuously repaint 
-    animate(step);    
+// Animate function
+var animate = window.requestAnimationFrame || function(callback) { window.setTimeout(callback, 1000/60) }; 
 
-  </script>
-</body>
+window.onload = function () {
+  init();
+  step();
+  addKeyEvents();
+};    
+</script>
+    </body>
 </html>

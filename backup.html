@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bloc Pong</title>
+  <style type="text/css">
+    #table {
+      margin: 0 auto;
+      display: block;
+      border: 1px solid black;
+      background-color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Bloc Pong</h1>
+  <canvas id="table" width="700" height="500"></canvas>
+
+  <script>
+  	window.onload = animate;
+
+    var table_canvas = document.getElementById('table');
+    var context = table_canvas.getContext('2d');
+
+    // Constructor function for Paddle objects
+    function Paddle(x_position, y_position, width, height) {
+      this.x = x_position;
+      this.y = y_position;
+      this.w = width;
+      this.h = height;
+      this.x_speed = 0;
+      this.y_speed = 0;
+      this.move = function() {
+        context.clearRect(this.x, this.y, this.w, this.h);
+        this.y += this.y_speed;       
+      }
+      this.render = function() {
+        context.beginPath();
+        context.rect(this.x,this.y,this.w,this.h)
+        context.fillStyle = 'black';
+        context.fill();
+        // Move Player Paddle
+        window.addEventListener('keydown', function (e) {
+            context.key = e.keyCode;
+        })
+        window.addEventListener('keyup', function (e) {
+            context.key = false;
+        })
+        if (context.key && context.key == 38) {
+          if (player.y >= 10) {
+            player.y_speed = -3;
+          } else {
+            player.y_speed = 0;
+          }
+        }
+        if (context.key && context.key == 40) {
+          if (player.y >= 360){
+            player.y_speed = 3;
+          } else {
+            player.y_speed = 0;
+          }
+        }
+        if (context.key && context.key == 37) {player.y_speed = 0; }                      
+        if (context.key && context.key == 39) {player.y_speed = 0; }
+      };
+     
+    }
+
+    // Create Paddle objects
+    var computer = new Paddle(30,175,20,130);
+    var player = new Paddle(650,175,20,130);
+
+    // Create Ball object
+    var ball = {
+      x : 340, y : 240, w : 20, h : 20, x_speed : 0, y_speed : 3,
+      render : function() {
+        context.beginPath();
+        context.rect(this.x,this.y,this.w,this.h)
+        context.fillStyle = 'black';
+        context.fill();
+        // this.x += this.x_speed;
+        // this.y += this.y_speed;
+      }
+    };
+
+    // Animate game
+    var animate = window.requestAnimationFrame ||
+              function(callback) { window.setTimeout(callback, 1000/60) };  
+
+    // Render objects
+    function step(){
+        player.move();
+    	player.render();        
+    	computer.render();
+    	ball.render();
+        animate(step)
+    }
+    
+    //Continuously repaint 
+    animate(step);    
+
+  </script>
+</body>
+</html>
