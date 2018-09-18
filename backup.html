@@ -31,7 +31,7 @@
       this.x_speed = 0;
       this.y_speed = 0;
       this.move = function() {
-        context.clearRect(this.x, this.y, this.w, this.h);
+        // context.clearRect(this.x, this.y, this.w, this.h);
         this.y += this.y_speed;       
       }
       this.render = function() {
@@ -78,8 +78,8 @@
         context.rect(this.x,this.y,this.w,this.h)
         context.fillStyle = 'black';
         context.fill();
-        // this.x += this.x_speed;
-        // this.y += this.y_speed;
+        this.x += this.x_speed;
+       this.y += this.y_speed;
       }
     };
 

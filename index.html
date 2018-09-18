@@ -12,7 +12,7 @@ var context;
 var W = 700, H = 500;
 
 // Initialize the game canvas
-function init(){
+function init() {
   canvas = document.getElementById('table');
   context = canvas.getContext('2d');  
   canvas.width = W;
@@ -44,7 +44,7 @@ function Paddle(x, y) {
   // Move the vertical distance 'paddle_speed'
   this.move = function (paddle_speed) {
     // clear the current rectangle
-    context.clearRect(this.x, this.y, this.width, this.height);
+    // context.clearRect(this.x, this.y, this.width, this.height);
     this.y += paddle_speed;
   }
   this.render = function () {
@@ -59,16 +59,16 @@ function onKeyDown(e) {
   if (e.keyCode === 38) {
     // Move 10 pixels on the y axis towards the origin
     // Only if the paddle y position equals 10 or more pixels
-    if (player.y >= 10){
-      player.move(-10);  
+    if (player.y >= 5){
+      player.move(-12);  
     }
   }
   // down arrow
   if (e.keyCode === 40) {
     // Move 10 pixels on the y axis away from the origin 
     // Only if the paddle y position equals 360 or fewer pixels
-    if (player.y <= 360){
-      player.move(10);
+    if (player.y <= 370){
+      player.move(12);
     } 
   }
 }
@@ -79,26 +79,70 @@ var player = new Paddle(650, 200);
 
 // Ball Object Constructor
 function Ball() {
-  this.x = 350;
+  this.x = 100;
   this.y = 265;
+  this.w = 20;
+  this.h = 20;
   this.color = "white";
-  this.radius = 10;
+  this.x_speed = 3;
+  this.y_speed = Math.floor(Math.random() * 9) - 4;
+  // this.y_speed = 0;
+  this.update = function (action) {
+    if (action == "reverse"){
+      this.x_speed = ~this.x_speed+1;
+      this.y_speed += 1;    
+    }
+    if (action == "wall"){
+      this.y_speed = ~this.y_speed+1;      
+    }
+  }  
   this.render = function () {
     context.fillStyle = this.color;
     context.beginPath();
-    context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    context.rect(this.x,this.y,this.w,this.h)
     context.fill();
+    this.x += this.x_speed;
+    this.y += this.y_speed;    
   };
 }
 
 // Declaring a new ball
 var ball = new Ball();
 
+// Collision function
+var collision = function () {
+  var player_bottom = player.y + 130;
+  var computer_bottom = computer.y + 130;
+  
+  // if ball hits wall
+  if (ball.y < 0 || ball.y > canvas.height) {    
+    ball.update("wall");
+  }
+
+  // ball hits player's paddle
+  if (ball.x > player.x && ball.y > player.y && ball.y < player_bottom) {
+    ball.update("reverse");
+  }
+
+  // ball hits computers paddle
+  if (ball.x < computer.x && ball.y > computer.y && ball.y < computer_bottom) {
+    ball.update("reverse");        
+  }
+}
+
+var goal = function() {
+  if (ball.x < 0 || ball.x > canvas.width) {
+    console.log("goal!");
+  }  
+}
+
 var render = function () {
-  paintCanvas();
+  paintCanvas(); 
   player.render();
   computer.render();
   ball.render();
+  collision();
+  goal();
   // redraw
   animate(render);
 };
