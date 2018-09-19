@@ -73,6 +73,17 @@ function onKeyDown(e) {
   }
 }
 
+var computer_ai = function() {
+  var computer_mid = computer.y + 65;
+
+  if (ball.y > computer_mid) {
+    computer.move(3);
+  }
+  if (ball.y < computer_mid) {
+    computer.move(-3);
+  }
+}
+
 // Declaring a player and computer paddle
 var computer = new Paddle(30, 200);
 var player = new Paddle(650, 200);
@@ -84,13 +95,13 @@ function Ball() {
   this.w = 20;
   this.h = 20;
   this.color = "white";
-  this.x_speed = 3;
+  this.x_speed = 5;
   this.y_speed = Math.floor(Math.random() * 9) - 4;
   // this.y_speed = 0;
   this.update = function (action) {
     if (action == "reverse"){
       this.x_speed = ~this.x_speed+1;
-      this.y_speed += 1;    
+      this.y_speed += Math.floor(Math.random() * 3)+ 1;    
     }
     if (action == "wall"){
       this.y_speed = ~this.y_speed+1;      
@@ -131,9 +142,20 @@ var collision = function () {
 }
 
 var goal = function() {
-  if (ball.x < 0 || ball.x > canvas.width) {
-    console.log("goal!");
-  }  
+  if (ball.x < 0) {
+    ball.x = 100;
+    ball.y = 265;
+    ball.x_speed = 5;
+    ball.y_speed = Math.floor(Math.random() * 9) - 4;
+    console.log("player goal!");
+  }
+  if (ball.x > canvas.width) {
+    ball.x = 100;
+    ball.y = 265;
+    ball.x_speed = 5;
+    ball.y_speed = Math.floor(Math.random() * 9) - 4; 
+    console.log("computer goal!");
+  } 
 }
 
 var render = function () {
@@ -141,6 +163,7 @@ var render = function () {
   player.render();
   computer.render();
   ball.render();
+  computer_ai();
   collision();
   goal();
   // redraw
