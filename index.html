@@ -1,15 +1,38 @@
 <html>
-    <head>
-      <title>Bloc Pong</title>
-    </head>
-    <body>
-      <h1>Bloc Pong</h1>
-        <canvas id='table'></canvas>
-<script>
-var canvas;
-var context;
+<head>
+  <title>Bloc Pong</title>
+  <style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #computer_score {
+    float: left;
+  }
+  #player_score {
+    float: right;
+  }
+  .clear{
+    clear:both;
+  }
+</style>
+</head>
+<body>
+  <h1>Bloc Pong</h1>
+  <canvas id='table'></canvas>
+  <div style="width:700px">  
+    <h1 id="computer_score">0</h1>
+    <h1 id="player_score">0</h1>
+    <div class="clear"></div>
+  </div>        
+
+  <script>
+    var canvas;
+    var context;
 // width and height of canvas
 var W = 700, H = 500;
+
+computer_score = 0;
+player_score = 0;
 
 // Initialize the game canvas
 function init() {
@@ -60,7 +83,7 @@ function onKeyDown(e) {
     // Move 10 pixels on the y axis towards the origin
     // Only if the paddle y position equals 10 or more pixels
     if (player.y >= 5){
-      player.move(-12);  
+      player.move(-15);  
     }
   }
   // down arrow
@@ -68,7 +91,7 @@ function onKeyDown(e) {
     // Move 10 pixels on the y axis away from the origin 
     // Only if the paddle y position equals 360 or fewer pixels
     if (player.y <= 370){
-      player.move(12);
+      player.move(15);
     } 
   }
 }
@@ -147,14 +170,16 @@ var goal = function() {
     ball.y = 265;
     ball.x_speed = 5;
     ball.y_speed = Math.floor(Math.random() * 9) - 4;
-    console.log("player goal!");
+    player_score += 1;
+    document.getElementById("player_score").innerHTML = player_score;
   }
   if (ball.x > canvas.width) {
     ball.x = 100;
     ball.y = 265;
     ball.x_speed = 5;
     ball.y_speed = Math.floor(Math.random() * 9) - 4; 
-    console.log("computer goal!");
+    computer_score += 1;
+    document.getElementById("computer_score").innerHTML = computer_score;    
   } 
 }
 
@@ -184,5 +209,5 @@ window.onload = function () {
   addKeyEvents();
 };    
 </script>
-    </body>
+</body>
 </html>
