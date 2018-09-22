@@ -182,11 +182,15 @@ var goal = function() {
     computer_score += 1;
     document.getElementById("computer_score").innerHTML = computer_score;    
   }
-  if (document.getElementById("player_score").innerHTML == 2){
+}
+
+// Check if 11 goals have been scored
+var check_for_winner = function() {
+  if (document.getElementById("player_score").innerHTML == 11){
     alert("You won!");
     location.reload();
   }
-  if (document.getElementById("computer_score").innerHTML == 2){
+  if (document.getElementById("computer_score").innerHTML == 11){
     alert("You lost!");
     location.reload();
   }
@@ -201,6 +205,7 @@ var render = function () {
   computer_ai();
   collision();
   goal();
+  check_for_winner();
   // Redraw
   animate(render);
 };
