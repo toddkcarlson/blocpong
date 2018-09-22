@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Bloc Pong</title>
+  <title>Bloc Pong Extravaganza</title>
   <style>
   body {
     font-family: Arial, Helvetica, sans-serif;
@@ -17,7 +17,7 @@
 </style>
 </head>
 <body>
-  <h1>Bloc Pong</h1>
+  <h1>Bloc Pong Extravaganza</h1>
   <canvas id='table'></canvas>
   <div style="width:700px">  
     <h1 id="computer_score">0</h1>
@@ -28,9 +28,10 @@
   <script>
     var canvas;
     var context;
-// width and height of canvas
+// Width and height of canvas
 var W = 700, H = 500;
 
+// Game starts 0-0
 computer_score = 0;
 player_score = 0;
 
@@ -47,11 +48,9 @@ function paintCanvas() {
   context.fillStyle = "black";
   context.fillRect(0, 0, W, H);
   context.beginPath();
-  // context.lineWidth = 5;
-  // context.strokeStyle = 'white';
-  // context.strokeRect(0, 0, 700, 500);  
 }
 
+// Listen for keyboard events from player
 function addKeyEvents() {
   window.addEventListener('keydown', onKeyDown, true);
 }
@@ -63,13 +62,11 @@ function Paddle(x, y) {
   this.color = "white";
   this.width = 20;
   this.height = 130;
-  // this.y_speed = 0;
-  // Move the vertical distance 'paddle_speed'
+  // Move the player's paddle
   this.move = function (paddle_speed) {
-    // clear the current rectangle
-    // context.clearRect(this.x, this.y, this.width, this.height);
     this.y += paddle_speed;
   }
+  // Render paddles
   this.render = function () {
     context.beginPath();
     context.fillStyle = this.color;
@@ -77,25 +74,27 @@ function Paddle(x, y) {
   };
 }
 
+// Keyboard actions
 function onKeyDown(e) {
-  // up arrow
+  // Up arrow
   if (e.keyCode === 38) {
-    // Move 10 pixels on the y axis towards the origin
-    // Only if the paddle y position equals 10 or more pixels
+    // Move 15 pixels on the y axis
+    // Only if the paddle y position stays within the canvas
     if (player.y >= 5){
       player.move(-15);  
     }
   }
-  // down arrow
+  // Down arrow
   if (e.keyCode === 40) {
-    // Move 10 pixels on the y axis away from the origin 
-    // Only if the paddle y position equals 360 or fewer pixels
+    // Move 15 pixels on the y axis 
+   // Only if the paddle y position stays within the canvas
     if (player.y <= 370){
       player.move(15);
     } 
   }
 }
 
+// Move the computer's paddle
 var computer_ai = function() {
   var computer_mid = computer.y + 65;
 
@@ -111,7 +110,7 @@ var computer_ai = function() {
 var computer = new Paddle(30, 200);
 var player = new Paddle(650, 200);
 
-// Ball Object Constructor
+// Ball object constructor
 function Ball() {
   this.x = 100;
   this.y = 265;
@@ -119,8 +118,8 @@ function Ball() {
   this.h = 20;
   this.color = "white";
   this.x_speed = 5;
-  this.y_speed = Math.floor(Math.random() * 9) - 4;
-  // this.y_speed = 0;
+  this.y_speed = Math.floor(Math.random() * 9) - 4; // Intial computer's serve
+  // Redirect ball on contact 
   this.update = function (action) {
     if (action == "reverse"){
       this.x_speed = ~this.x_speed+1;
@@ -129,7 +128,8 @@ function Ball() {
     if (action == "wall"){
       this.y_speed = ~this.y_speed+1;      
     }
-  }  
+  }
+  // Render ball
   this.render = function () {
     context.fillStyle = this.color;
     context.beginPath();
@@ -148,22 +148,23 @@ var collision = function () {
   var player_bottom = player.y + 130;
   var computer_bottom = computer.y + 130;
   
-  // if ball hits wall
+  // If ball hits wall
   if (ball.y < 0 || ball.y > canvas.height) {    
     ball.update("wall");
   }
 
-  // ball hits player's paddle
+  // Ball hits player's paddle
   if (ball.x > player.x && ball.y > player.y && ball.y < player_bottom) {
     ball.update("reverse");
   }
 
-  // ball hits computers paddle
+  // Ball hits computers paddle
   if (ball.x < computer.x && ball.y > computer.y && ball.y < computer_bottom) {
     ball.update("reverse");        
   }
 }
 
+// If a goal is scored
 var goal = function() {
   if (ball.x < 0) {
     ball.x = 100;
@@ -180,9 +181,18 @@ var goal = function() {
     ball.y_speed = Math.floor(Math.random() * 9) - 4; 
     computer_score += 1;
     document.getElementById("computer_score").innerHTML = computer_score;    
-  } 
+  }
+  if (document.getElementById("computer_score").innerHTML == 11){
+    alert("You won!");
+    location.reload();
+  }
+  if (document.getElementById("computer_score").innerHTML == 11){
+    alert("You lost!");
+    location.reload();
+  }
 }
 
+// Run the game
 var render = function () {
   paintCanvas(); 
   player.render();
@@ -191,7 +201,7 @@ var render = function () {
   computer_ai();
   collision();
   goal();
-  // redraw
+  // Redraw
   animate(render);
 };
 
@@ -203,6 +213,7 @@ function step(){
 // Animate function
 var animate = window.requestAnimationFrame || function(callback) { window.setTimeout(callback, 1000/60) }; 
 
+// Make things happen on page load
 window.onload = function () {
   init();
   step();
